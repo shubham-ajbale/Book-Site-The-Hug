@@ -1,4 +1,4 @@
-apt update && apt install git nginx -y 
+apt update && apt install nginx -y 
 
 git clone https://github.com/shubham-ajbale/Book-Site-The-Hug.git
 
