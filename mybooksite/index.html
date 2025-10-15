@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Hug - Book Launch</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: linear-gradient(to bottom, #f8f8f8, #ffffff);
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 100vh;
+      color: #111;
+      overflow-x: hidden;
+      overflow-y: auto;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .launch-container {
+      text-align: center;
+      animation: floatUp 2s ease-out;
+      margin-top: 2rem;
+    }
+
+    .book-cover {
+      width: 320px; height: 480px;
+      border: 8px solid #fff;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.15), 0 0 30px rgba(255, 255, 255, 0.6);
+      border-radius: 12px;
+      overflow: hidden;
+      animation: glowPulse 3s infinite ease-in-out, float 6s ease-in-out infinite;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-bottom: 1.5rem;
+    }
+
+    .book-cover:hover { transform: scale(1.05); }
+    .book-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+    .author-name {
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: #555;
+      opacity: 0;
+      animation: fadeInText 2s 2s forwards;
+    }
+
+    .cta-button {
+      margin-top: 2rem;
+      background: #111; color: #fff;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.3s ease;
+      opacity: 0;
+      animation: fadeInText 2s 2.5s forwards;
+    }
+
+    .cta-button:hover { background: #333; transform: scale(1.05); }
+
+    /* Flipbook viewer */
+    .flipbook-viewer {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: #ffffff;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    .flipbook-container {
+      position: relative;
+      width: 90vw; max-width: 600px;
+      height: 90vh; max-height: 800px;
+      overflow: hidden;
+    }
+
+    .flipbook-container img {
+      position: absolute;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+      opacity: 1;
+      transition: transform 0.8s ease, opacity 0.8s ease;
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 40px;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .controls button {
+      background: #fff;
+      border: none;
+      padding: 0.7rem 1.4rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .controls button:hover { background: #ddd; }
+
+    footer {
+      font-size: 0.85rem;
+      color: #444;
+      text-align: center;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      background: rgba(255, 255, 255, 0.6);
+      padding: 6px 14px;
+      border-radius: 20px;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 2rem;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    @keyframes glowPulse { 0% { box-shadow: 0 0 20px rgba(255,255,255,0.5); } 50% { box-shadow: 0 0 50px rgba(255,255,255,0.8); } 100% { box-shadow: 0 0 20px rgba(255,255,255,0.5); } }
+    @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+    @keyframes fadeInText { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes floatUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 768px) {
+      .flipbook-container { width: 95vw; height: 85vh; }
+      .controls button { padding: 0.6rem 1.2rem; font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="launch-container" id="mainPage">
+    <div class="book-cover">
+      <img src="Book Cover.png.png" alt="The Hug - Book Cover">
+    </div>
+    <div class="author-name">by Shubham Ajbale</div>
+    <button class="cta-button" id="readButton">Read eBook</button>
+  </div>
+
+  <div class="flipbook-viewer" id="flipbookViewer">
+    <div class="flipbook-container" id="flipbookContainer">
+      <img id="currentPage" src="" alt="Current Page">
+      <img id="nextPageImg" src="" alt="Next Page">
+    </div>
+    <div class="controls">
+      <button id="prevPage">⬅ Prev</button>
+      <button id="nextPage">Next ➡</button>
+    </div>
+  </div>
+
+  <footer>© 2025 Shubham Ajbale. All Rights Reserved.</footer>
+
+  <script>
+    const readButton = document.getElementById('readButton');
+    const mainPage = document.getElementById('mainPage');
+    const flipbookViewer = document.getElementById('flipbookViewer');
+    const currentPageImg = document.getElementById('currentPage');
+    const nextPageImg = document.getElementById('nextPageImg');
+    const prevPageBtn = document.getElementById('prevPage');
+    const nextPageBtn = document.getElementById('nextPage');
+
+    const totalPages = 83;
+    let currentPage = 1;
+    let isTransitioning = false;
+
+    function resetImageStyles() {
+      [currentPageImg, nextPageImg].forEach(img => {
+        img.style.transition = 'none';
+        img.style.transform = 'translateX(0)';
+        img.style.opacity = '1';
+      });
+    }
+
+    function showInitialPage() {
+      resetImageStyles();
+      currentPageImg.src = `${currentPage}.png`;
+      nextPageImg.style.opacity = 0;
+    }
+
+    function wipePage(forward = true) {
+      if (isTransitioning) return;
+      if ((forward && currentPage >= totalPages) || (!forward && currentPage <= 1)) return;
+
+      isTransitioning = true;
+      const nextPageNum = forward ? currentPage + 1 : currentPage - 1;
+      nextPageImg.src = `${nextPageNum}.png`;
+
+      nextPageImg.style.transition = 'none';
+      nextPageImg.style.transform = forward ? 'translateX(100%)' : 'translateX(-100%)';
+      nextPageImg.style.opacity = '1';
+
+      void nextPageImg.offsetWidth;
+
+      currentPageImg.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
+      nextPageImg.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
+
+      currentPageImg.style.transform = forward ? 'translateX(-100%)' : 'translateX(100%)';
+      currentPageImg.style.opacity = '0';
+      nextPageImg.style.transform = 'translateX(0)';
+
+      setTimeout(() => {
+        currentPage = nextPageNum;
+        currentPageImg.src = nextPageImg.src;
+        resetImageStyles();
+        nextPageImg.style.opacity = '0';
+        isTransitioning = false;
+      }, 650);
+    }
+
+    readButton.addEventListener('click', () => {
+      mainPage.style.display = 'none';
+      flipbookViewer.style.display = 'flex';
+      currentPage = 1;
+      showInitialPage();
+    });
+
+    nextPageBtn.addEventListener('click', () => wipePage(true));
+    prevPageBtn.addEventListener('click', () => wipePage(false));
+
+    window.addEventListener('keydown', (e) => {
+      if (flipbookViewer.style.display === 'flex') {
+        if (e.key === 'ArrowRight') wipePage(true);
+        if (e.key === 'ArrowLeft') wipePage(false);
+      }
+    });
+  </script>
+</body>
+</html>
