@@ -12,4 +12,4 @@ systemctl restart nginx
  
 systemctl status nginx
 
-http://<Public-IP>
+http://Public-IP
